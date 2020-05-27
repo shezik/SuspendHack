@@ -1,5 +1,5 @@
 # SuspendHack
-A KOReader plugin for Kindle to suspend normally without framework.
+A KOReader plugin for Kindle to suspend normally without framework. (Tested on Kindle Touch)
 
 ## Usage
 
@@ -8,6 +8,10 @@ Put the whole "suspendhack.koplugin" folder under koreader/plugins and restart K
 Then open a book. Now you should be able to put Kindle to sleep with a press of the power button even if you launched KOReader with the "no framework" option in KUAL.
 
 (No menu is implemented yet.)
+
+### Why I don't see the "no framework" option in KUAL?
+
+Modify /mnt/*(us, or sd)*/extensions/koreader/menu.json or use the one I provided.
 
 ## Known issues
 
