@@ -13,6 +13,8 @@ local _ = require("gettext")
 local T = require("ffi/util").template
 local lipc = require("liblipclua")
 
+local lipc_handle, error_message, error_number
+
 local SuspendHack = WidgetContainer:new{
 	name = "suspendhack",
 	is_doc_only = false,
@@ -25,25 +27,22 @@ function SuspendHack:_notify(userText)
 end
 
 function SuspendHack:_kafPresent()
-	if os.execute("lipc-probe -l|grep ^com.lab126.kaf$") == 256 then
-		return false
-	else
-		return true
-	end
+	return os.execute("lipc-probe -l|grep ^com.lab126.kaf$") ~= 256
 end
 
 function SuspendHack:init()
-	if not self:_kafPresent() then
-		logger.dbg("SuspendHack enabled.")
-		self:_start()
+	if self:_kafPresent() then
+		logger.dbg("SuspendHack is inactive since framework is present.")
 	else
-		logger.dbg("SuspendHack disabled.")
-		return { disabled = true, }
+		logger.dbg("SuspendHack is active.")
+		self:_start()
 	end
+	if not self.ui or not self.ui.menu then return end
+    self.ui.menu:registerToMainMenu(self)
 end
 
 function SuspendHack:_start()
-	local lipc_handle, error_message, error_number = lipc.init("com.lab126.kaf")
+	lipc_handle, error_message, error_number = lipc.init("com.lab126.kaf")
 	if not lipc_handle then
 		self:_notify("SuspendHack: Failed to initialize LIPC: (" .. tostring(error_number) .. ") " .. error_message)
 		return error_number
@@ -58,7 +57,9 @@ function SuspendHack:_start()
 end
 
 function SuspendHack:onSuspend()
-	lipc_handle:close()
+	if lipc_handle then
+		lipc_handle:close()
+	end
 end
 
 function SuspendHack:onResume()

@@ -2,5 +2,5 @@ local _ = require("gettext")
 return {
     name = "suspendhack",
     fullname = _("SuspendHack"),
-    description = _([[Kindle can suspend when power button is pressed without framework.]]),
+    description = _([[A KOReader plugin for Kindle to suspend normally without framework. (Tested on Kindle Touch)]]),
 }
